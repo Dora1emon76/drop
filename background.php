@@ -1,5 +1,4 @@
 <?php
-include("../functions.php");
 $type = $argv[4];
 $data = json_decode($argv[1],true);
 $counter = 0;
@@ -58,20 +57,17 @@ $data = json_encode(array(
     )
 ));
 
-$ch = curl_init($url);
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $data,
-    CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($data)
-    ]
-]);
+$options = [
+    'http' => [
+        'header' => "Content-type: application/json\r\n",
+        'method' => 'POST',
+        'content' => $data,
+    ],
+];
 
-$response = curl_exec($ch);
+$context = stream_context_create($options);
+$response = file_get_contents($url, false, $context);
 
-curl_close($ch);
 break;}
 }}
 ?>
